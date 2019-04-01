@@ -64,20 +64,20 @@ router.post("/register", (req, res) => {
   });
 });
 
-// @route  /api/users/register
-// @desc   Register user
+// @route  /api/users/login
+// @desc   Login user
 // @access PUBLIC
 
 router.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
   const { errors, isValid } = validateLoginInput(req.body);
 
   //check valid
   if (!isValid) {
     return res.status(400).json(errors);
   }
+
+  const email = req.body.email;
+  const password = req.body.password;
 
   User.findOne({ email }).then(user => {
     if (!user) {
@@ -95,7 +95,7 @@ router.post("/login", (req, res) => {
         const payload = { id: user.id, name: user.name, avatar: user.avatar }; // create jwt payload
         jwt.sign(
           payload,
-          keys.secretOrkey,
+          keys.secretOrKey,
           { expiresIn: 3600 },
           (err, token) => {
             res.json({
